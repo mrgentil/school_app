@@ -1,8 +1,8 @@
 <div class="navbar navbar-expand-md header-menu-one bg-light">
     <div class="nav-bar-header-one">
         <div class="header-logo">
-            <a href="index.html">
-                <img src="img/logo.png" alt="logo">
+            <a href="{{url('/')}}">
+                <img src="{{asset('img/logo.png')}}" alt="logo">
             </a>
         </div>
         <div class="toggle-button sidebar-toggle">
@@ -33,38 +33,54 @@
                                     <span class="flaticon-search" aria-hidden="true"></span>
                                 </button>
                             </span>
-                    <input type="text" class="form-control" placeholder="Find Something . . .">
+                    <input type="text" class="form-control" placeholder="Trouver quelque chose . . .">
                 </div>
             </li>
         </ul>
         <ul class="navbar-nav">
             <li class="navbar-item dropdown header-admin">
-                <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                   aria-expanded="false">
+                @if(auth()->check())
+                <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                     <div class="admin-title">
-                        <h5 class="item-title">Stevne Zone</h5>
-                        <span>Admin</span>
+                        <h5 class="item-title">{{ auth()->user()->first_name }}</h5>
+                        <span>{{ auth()->user()->role->name ?? 'Rôle non défini' }}</span>
                     </div>
                     <div class="admin-img">
-                        <img src="img/figure/admin.jpg" alt="Admin">
+                        @if(auth()->user()->avatar)
+                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="img-thumbnail rounded-circle" style="width: 50px; height: 50px;">
+                        @else
+                            @php
+                                $initials = strtoupper(substr(auth()->user()->name, 0, 1)) . strtoupper(substr(auth()->user()->name, strpos(auth()->user()->name, ' ') + 1, 1));
+                                $colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FFAF33'];
+                                $bgColor = $colors[array_rand($colors)];
+                            @endphp
+                            <div class="generated-avatar" style="background-color: {{ $bgColor }};">
+                                {{ $initials }}
+                            </div>
+                        @endif
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="item-header">
-                        <h6 class="item-title">Steven Zone</h6>
+                        <h6 class="item-title">{{ auth()->user()->first_name }} - {{ auth()->user()->name }}</h6>
                     </div>
                     <div class="item-content">
                         <ul class="settings-list">
-                            <li><a href="#"><i class="flaticon-user"></i>My Profile</a></li>
-                            <li><a href="#"><i class="flaticon-list"></i>Task</a></li>
-                            <li><a href="#"><i class="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>Message</a>
+                            <li><a href="#"><i class="flaticon-user"></i>Mon Profil</a></li>
+                            <li><a href="#"><i class="flaticon-gear-loading"></i>Parametres</a></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="flaticon-turn-off"></i>Deconnexion
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </li>
-                            <li><a href="#"><i class="flaticon-gear-loading"></i>Account Settings</a></li>
-                            <li><a href="login.html"><i class="flaticon-turn-off"></i>Log Out</a></li>
                         </ul>
                     </div>
                 </div>
             </li>
+
             <li class="navbar-item dropdown header-message">
                 <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                    aria-expanded="false">
@@ -193,6 +209,13 @@
                     <a class="dropdown-item" href="#">Franchis</a>
                     <a class="dropdown-item" href="#">Chiness</a>
                 </div>
+                @else
+                    <a class="navbar-nav-link" href="{{ route('login') }}">
+                        <div class="admin-title">
+                            <h5 class="item-title">Connectez-vous</h5>
+                        </div>
+                    </a>
+                @endif
             </li>
         </ul>
     </div>

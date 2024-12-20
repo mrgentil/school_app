@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+Auth::routes(['register' => false]);
+Auth::routes(['reset' => true]);
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
-Auth::routes();
+    //Home Route
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    //User  ROutes
+    Route::resource('users', \App\Http\Controllers\UserController::class);
+
+    //Role Routes
+    Route::resource('roles', \App\Http\Controllers\RoleController::class);
+
+    //School Routes
+    Route::resource('schools', \App\Http\Controllers\SchoolController::class);
+});
 
 
