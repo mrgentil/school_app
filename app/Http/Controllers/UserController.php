@@ -183,4 +183,18 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès.');
     }
+
+    // Afficher le formulaire pour modifier une école
+public function edit(School $school)
+{
+    if (
+        !Auth::user()->hasRole('Super Administrateur') &&
+        (!Auth::user()->hasRole('Administrateur') || Auth::user()->school_id !== $school->id)
+    ) {
+        abort(403, 'Accès non autorisé');
+    }
+
+    return view('schools.form', compact('school'));
+}
+
 }

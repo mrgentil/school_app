@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\School;
+use App\Models\Role;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,17 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
         $this->call([
             SchoolTableSeeder::class,
             RolesTableSeeder::class,
             UsersTableSeeder::class,
         ]);
+
+      /* // Générer 20 écoles
+              $schools = School::factory(20)->create();
+
+              // Générer 4 rôles
+              Role::factory()->create(['name' => 'Administrateur']);
+              Role::factory()->create(['name' => 'Teacher']);
+              Role::factory()->create(['name' => 'Student']);
+              Role::factory()->create(['name' => 'Tutor']);
+
+              // Générer 50 utilisateurs
+              User::factory(50)->create(); */
     }
 
 

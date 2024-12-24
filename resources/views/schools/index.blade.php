@@ -4,12 +4,12 @@
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->
         <div class="breadcrumbs-area">
-            <h3>Utilisateurs</h3>
+            <h3>Ecoles</h3>
             <ul>
                 <li>
                     <a href="{{ url('/') }}">Accueil</a>
                 </li>
-                <li>Les Utilisateurs</li>
+                <li>Les Ecoles</li>
             </ul>
         </div>
         <!-- Breadcubs Area End Here -->
@@ -18,7 +18,7 @@
             <div class="card-body">
                 <div class="heading-layout1">
                     <div class="item-title">
-                        <h3>Liste Utilisateur</h3>
+                        <h3>Liste Ecoles</h3>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -26,30 +26,24 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Avatar</th>
+                            <th>Logo</th>
                             <th>Nom</th>
-                            <th>Postnom</th>
-                            <th>Prénom</th>
-                            <th>Genre</th>
-                            <th>Email</th>
                             <th>Adresse</th>
-                            <th>Téléphone</th>
-                            <th>Role</th>
-                            <th>Ecole</th>
+
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($users as $user)
+                        @foreach ($schools as $school)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="text-center">
-                                    @if ($user->avatar)
-                                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px;">
+                                    @if ($school->logo)
+                                        <img src="{{ asset('storage/' . $school->logo) }}" alt="Logo" class="rounded-circle" style="width: 50px; height: 50px;">
 
                                          @else
                                                                     @php
-                                                                        $initials = strtoupper(substr($user->name, 0, 1)) . strtoupper(substr($user->name, strpos($user->name, ' ') + 1, 1));
+                                                                        $initials = strtoupper(substr($school->name, 0, 1)) . strtoupper(substr($school->name, strpos($school->name, ' ') + 1, 1));
                                                                         $colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FFAF33'];
                                                                       $bgColor = $colors[array_rand($colors)];
                                                                     @endphp
@@ -58,25 +52,20 @@
                                                                     </div>
                                                                 @endif
                                 </td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->first_name }}</td>
-                                <td>{{ $user->last_name }}</td>
-                                <td>{{ $user->gender }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->adress }}</td>
-                                <td>{{ $user->phone ?? 'N/A' }}</td>
-                                <td>{{ $user->role->name }}</td>
-                                <td>{{ $user->school->name }}</td>
+                                <td>{{ $school->name }}</td>
+
+                                <td>{{ $school->adress ?? 'N/A' }}</td>
+
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                             <span class="flaticon-more-button-of-three-dots"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}">
+                                            <a class="dropdown-item" href="{{ route('schools.edit', $school->id) }}">
                                                 <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                             </a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                            <form action="{{ route('schools.destroy', $school->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette école ?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item">
@@ -95,3 +84,4 @@
         </div>
     </div>
 @endsection
+

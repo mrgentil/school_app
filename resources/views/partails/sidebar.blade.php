@@ -18,6 +18,18 @@
                     </li>
                 </ul>
             </li>
+        <li class="nav-item sidebar-nav-item">
+                        <a href="#" class="nav-link"><i class="flaticon-bus-side-view"></i><span>Ecole</span></a>
+                        <ul class="nav sub-group-menu">
+                            <li class="nav-item">
+                                <a href="{{route('schools.create')}}" class="nav-link"><i class="fas fa-angle-right"></i>Ajouter école</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('schools.index')}}" class="nav-link"><i
+                                        class="fas fa-angle-right"></i>Les écoles</a>
+                            </li>
+                        </ul>
+                    </li>
             <li class="nav-item sidebar-nav-item">
                 <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Students</span></a>
                 <ul class="nav sub-group-menu">

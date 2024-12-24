@@ -3,42 +3,31 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use App\Models\School; // Ajoutez cette ligne
+use App\Models\Role;   // Ajoutez cette ligne également si nécessaire
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = \App\Models\User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'name' => $this->faker->userName,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'gender' => $this->faker->randomElement(['male', 'female']),
+            'avatar' => $this->faker->imageUrl(100, 100, 'people', true, 'User'),
+            'adress' => $this->faker->address,
+            'phone' => $this->faker->optional()->phoneNumber,
+            'email' => $this->faker->unique()->safeEmail,
+            'email_verified_at' => $this->faker->optional()->dateTimeThisYear,
+            'password' => bcrypt('password'),
+            'school_id' => School::factory(), // Assurez-vous que ce modèle est bien importé
+            'role_id' => Role::factory(),     // Assurez-vous que ce modèle est bien importé
+            'remember_token' => \Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }
