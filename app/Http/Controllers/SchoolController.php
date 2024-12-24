@@ -13,9 +13,11 @@ class SchoolController extends Controller
     public function index()
     {
         if (Auth::user()->hasRole('Super Administrateur')) {
-            $schools = School::all(); // Super Administrateur voit tout
+            $schools = School::orderBy('created_at', 'desc')->get(); // Super Administrateur voit tout
         } elseif (Auth::user()->hasRole('Administrateur')) {
-            $schools = School::where('id', Auth::user()->school_id)->get(); // Administrateur voit seulement son école
+            $schools = School::where('id', Auth::user()->school_id)
+                ->orderBy('created_at', 'desc')
+                ->get(); // Administrateur voit seulement son école
         } else {
             abort(403, 'Accès non autorisé');
         }

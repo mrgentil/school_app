@@ -192,6 +192,6 @@ class UserController extends Controller
     }
 
     // Afficher le formulaire pour modifier une école
-
+   
 
 }
