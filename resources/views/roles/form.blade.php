@@ -1,5 +1,8 @@
 @extends('layouts.main')
-
+@section('title', isset($role) ? 'Modifier un role' : 'Ajouter un role')
+@section('meta_description')
+    {{ isset($role) ? "Modification des informations de role {$role->name}" : "Formulaire d'ajout d'un nouveau role" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->

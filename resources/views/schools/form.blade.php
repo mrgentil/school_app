@@ -1,5 +1,8 @@
 @extends('layouts.main')
-
+@section('title', isset($school) ? 'Modifier une école' : 'Ajouter une école')
+@section('meta_description')
+    {{ isset($school) ? "Modification des informations de l'école {$school->name}" : "Formulaire d'ajout d'une nouvelle école" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->

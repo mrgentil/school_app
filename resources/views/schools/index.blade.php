@@ -1,5 +1,8 @@
 @extends('layouts.main')
-
+@section('title', 'Liste Ecoles')
+@section('meta_description')
+    {{ "Formulaire d'ajout d'une nouvelle école" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->

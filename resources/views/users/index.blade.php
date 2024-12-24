@@ -1,5 +1,8 @@
 @extends('layouts.main')
-
+@section('title', 'Liste Utilisateurs')
+@section('meta_description')
+    {{ "Formulaire d'ajout d'un nouvel utilisateur" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->
@@ -45,18 +48,19 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="text-center">
                                     @if ($user->avatar)
-                                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar"
+                                             class="rounded-circle" style="width: 50px; height: 50px;">
 
-                                         @else
-                                                                    @php
-                                                                        $initials = strtoupper(substr($user->name, 0, 1)) . strtoupper(substr($user->name, strpos($user->name, ' ') + 1, 1));
-                                                                        $colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FFAF33'];
-                                                                      $bgColor = $colors[array_rand($colors)];
-                                                                    @endphp
+                                    @else
+                                        @php
+                                            $initials = strtoupper(substr($user->name, 0, 1)) . strtoupper(substr($user->name, strpos($user->name, ' ') + 1, 1));
+                                            $colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FFAF33'];
+                                          $bgColor = $colors[array_rand($colors)];
+                                        @endphp
                                         <div class="generated-avatar" style="background-color: {{ $bgColor }};">
-                                                                        {{ $initials }}
-                                                                    </div>
-                                                                @endif
+                                            {{ $initials }}
+                                        </div>
+                                    @endif
                                 </td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->first_name }}</td>
@@ -69,14 +73,16 @@
                                 <td>{{ $user->school->name }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                           aria-expanded="false">
                                             <span class="flaticon-more-button-of-three-dots"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
                                             <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}">
                                                 <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                             </a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item">

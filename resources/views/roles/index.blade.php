@@ -1,5 +1,8 @@
 @extends('layouts.main')
-
+@section('title', 'Liste Roles')
+@section('meta_description')
+    {{ "Formulaire d'ajout d'un nouveau role" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
         <!-- Breadcubs Area Start Here -->

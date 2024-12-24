@@ -48,8 +48,12 @@ les enseignants, les étudiants, les cours, les emplois du temps, les résultats
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
+
+
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{asset('css/main.css')}}">
+
+
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="{{asset('css/all.min.css')}}">
     <!-- Flaticon CSS -->
