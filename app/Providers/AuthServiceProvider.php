@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Classe;
 use App\Models\Role;
 use App\Models\School;
+use App\Policies\ClassPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SchoolPolicy;
 use App\Policies\UserPolicy;
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Role::class => RolePolicy::class,
         School::class => SchoolPolicy::class,
+        Classe::class => ClassPolicy::class,
     ];
 
     /**

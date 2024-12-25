@@ -32,13 +32,7 @@ class ClasseController extends Controller
     public function create()
     {
         $this->authorize('create', Classe::class);
-        // Si c'est un admin, on ne montre que son école
-        if (auth()->user()->canManageOwnClasses()) {
-            $schools = School::where('id', auth()->user()->school_id)->get();
-        } // Si c'est un super admin, on montre toutes les écoles
-        else {
-            $schools = School::all();
-        }
+        $schools = School::all();
         return view('classes.form', compact('schools'));
     }
 
@@ -50,12 +44,12 @@ class ClasseController extends Controller
     }
 
     public function edit(Classe $class)
-    {
-        $schools = School::all();
-        return view('classes.form', compact('class', 'schools'));
-    }
+{
+    $schools = School::all();
+    return view('classes.form', compact('class', 'schools'));
+}
 
-    public function update(ClassRequest $request, Classe $class)
+public function update(ClassRequest $request, Classe $class)
     {
         $this->classService->update($class, $request->validated());
         return redirect()->route('classes.index')
