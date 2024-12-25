@@ -94,6 +94,7 @@ class SchoolController extends Controller
                     'html' => view('schools.partials.schools-table', compact('schools'))->render()
                 ]);
             }
+
             return view('schools.index', compact('schools'));
         } catch (\Exception $e) {
             Log::error('Erreur recherche écoles: ' . $e->getMessage());

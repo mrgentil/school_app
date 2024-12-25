@@ -3,101 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RoleRequest;
+use App\Services\RoleService;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
-    // Afficher tous les roles (Super Administrateur uniquement)
+    protected $roleService;
+
+    public function __construct(RoleService $roleService)
+    {
+        $this->roleService = $roleService;
+        $this->middleware('auth');
+        $this->authorizeResource(Role::class, 'role');
+    }
+
     public function index()
     {
-        if (Auth::user()->hasRole('Super Administrateur')) {
-            $roles = Role::orderBy('created_at', 'desc')->get();
-        } else {
-            abort(403, 'Accès non autorisé');
+        try {
+            $roles = $this->roleService->getAllRoles();
+            return view('roles.index', compact('roles'));
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la récupération des rôles: ' . $e->getMessage());
+            return back()->withErrors('Une erreur est survenue lors du chargement des rôles.');
         }
-
-        return view('roles.index', compact('roles'));
     }
 
-    // Ajouter un role (Super Administrateur uniquement)
-    public function store(Request $request)
-    {
-        if (!Auth::user()->hasRole('Super Administrateur')) {
-            abort(403, 'Seul un Super Administrateur peut ajouter des roles');
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        Role::create($validated);
-
-        return redirect()->route('roles.index')->with('success', 'Role ajouté avec succès'); // Rediriger vers la page d'accueil.index')->with('success', 'École ajoutée avec succès');
-    }
-
-    // Modifier un Role (Super Administrateur)
-    public function update(Request $request, Role $role)
-    {
-        if (
-            !Auth::user()->hasRole('Super Administrateur')
-        ) {
-            abort(403, 'Accès non autorisé');
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $role->update($validated);
-
-        return redirect()->route('roles.index')->with('success', 'Role modifié avec succès');
-    }
-
-    // Supprimer un Role (Super Administrateur uniquement)
-    public function destroy(Role $role)
-    {
-        if (!Auth::user()->hasRole('Super Administrateur')) {
-            abort(403, 'Seul un Super Administrateur peut supprimer des écoles');
-        }
-
-        $role->delete();
-
-        return redirect()->route('roles.index')->with('success', 'Role supprimé avec succès'); // Rediriger vers la page d'accueil.index')->with('success', 'École supprimée avec succès');
-    }
-
-    // Afficher le formulaire pour créer une école (Super Administrateur uniquement)
     public function create()
     {
-        if (!Auth::user()->hasRole('Super Administrateur')) {
-            abort(403, 'Seul un Super Administrateur peut ajouter des roles');
-        }
-
         return view('roles.form');
     }
 
-    // Afficher les détails d'une école
-    public function show(Role $role)
+    public function store(RoleRequest $request)
     {
-        if (
-            !Auth::user()->hasRole('Super Administrateur')
-
-        ) {
-            abort(403, 'Accès non autorisé');
+        try {
+            $role = $this->roleService->createRole($request->validated());
+            return redirect()
+                ->route('roles.index')
+                ->with('success', 'Rôle créé avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Erreur création rôle: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->withErrors('Une erreur est survenue lors de la création du rôle.');
         }
-
-        return view('roles.show', compact('role'));
     }
 
-    // Afficher le formulaire pour modifier une école
     public function edit(Role $role)
     {
-        if (
-            !Auth::user()->hasRole('Super Administrateur')
-        ) {
-            abort(403, 'Accès non autorisé');
-        }
-
         return view('roles.form', compact('role'));
+    }
+
+    public function update(RoleRequest $request, Role $role)
+    {
+        try {
+            $this->roleService->updateRole($role, $request->validated());
+            return redirect()
+                ->route('roles.index')
+                ->with('success', 'Rôle modifié avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Erreur modification rôle: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->withErrors('Une erreur est survenue lors de la modification du rôle.');
+        }
+    }
+
+    public function destroy(Role $role)
+    {
+        try {
+            $this->roleService->deleteRole($role);
+            return redirect()
+                ->route('roles.index')
+                ->with('success', 'Rôle supprimé avec succès.');
+        } catch (\Exception $e) {
+            Log::error('Erreur suppression rôle: ' . $e->getMessage());
+            return back()->withErrors($e->getMessage());
+        }
     }
 }

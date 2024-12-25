@@ -49,14 +49,4 @@ trait HasRoles
     {
         return $this->belongsTo(Role::class);
     }
-
-    public function isAdmin(): bool
-    {
-        return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
-    }
-
-    public function isSuperAdmin(): bool
-    {
-        return $this->hasRole('Super Administrateur');
-    }
 }
