@@ -5,193 +5,183 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\School;
+use App\Http\Requests\UserRequest; // Nouveau
+use App\Services\UserService; // Nouveau
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\{Auth, Hash, Log, Password};
 
 class UserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+        $this->middleware('auth');
+        $this->middleware('can:manage-users');
+    }
+
+    /**
+     * Affiche la liste des utilisateurs
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $currentUser = auth()->user();
-
-        if ($currentUser->hasRole('Super Administrateur')) {
-            // Super Administrateur voit tous les utilisateurs
-            $users = User::with('role', 'school')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } elseif ($currentUser->hasRole('Administrateur')) {
-            // Administrateur voit uniquement les utilisateurs de son école
-            $users = User::with('role', 'school')
-                ->where('school_id', $currentUser->school_id)
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            abort(403, 'Accès interdit');
-        }
+        $users = $this->userService->getUsersList($currentUser);
 
         return view('users.index', compact('users'));
     }
 
+    /**
+     * Affiche le formulaire de création
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $currentUser = auth()->user();
-
-        if ($currentUser->hasRole('Super Administrateur')) {
-            // Super Administrateur peut assigner tous les rôles et voir toutes les écoles
-            $roles = Role::all();
-            $schools = School::all();
-        } elseif ($currentUser->hasRole('Administrateur')) {
-            // Administrateur ne peut pas assigner le rôle de Super Administrateur
-            $roles = Role::where('name', '!=', 'Super Administrateur')->get();
-            $schools = School::where('id', $currentUser->school_id)->get();
-        } else {
-            abort(403, 'Accès interdit');
-        }
+        [$roles, $schools] = $this->userService->getFormData($currentUser);
 
         return view('users.form', compact('roles', 'schools'));
     }
 
-    // Méthode store
-    public function store(Request $request)
+    /**
+     * Enregistre un nouvel utilisateur
+     *
+     * @param UserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(UserRequest $request)
     {
-        $currentUser = auth()->user();
-
-        // Validation des données
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'gender' => 'required|string',
-            'adress' => 'required|string',
-            'phone' => 'nullable|string',
-            'email' => 'required|email|unique:users,email',
-            'role_id' => 'required|exists:roles,id',
-            'school_id' => 'required|exists:schools,id',
-        ]);
-
         try {
-            // Vérification des permissions du rôle assigné
-            if ($currentUser->hasRole('Administrateur')) {
-                $superAdminRoleId = Role::where('name', 'Super Administrateur')->first()->id;
-                if ($validatedData['role_id'] == $superAdminRoleId) {
-                    return redirect()->back()->withErrors(['error' => 'Vous ne pouvez pas assigner le rôle de Super Administrateur.']);
-                }
+            $currentUser = auth()->user();
+            $this->userService->validateUserCreation($request->validated(), $currentUser);
 
-                // Assurez-vous que l'administrateur ajoute des utilisateurs dans sa propre école
-                if ($validatedData['school_id'] != $currentUser->school_id) {
-                    return redirect()->back()->withErrors(['error' => 'Vous ne pouvez ajouter des utilisateurs que dans votre école.']);
-                }
-            }
+            $user = $this->userService->createUser($request, $currentUser);
 
-            // Création de l'utilisateur
-            $user = new User($validatedData);
-            $user->password = Hash::make('password'); // Mot de passe temporaire
-            $user->created_by = $currentUser->id;
-
-            // Gestion de l'avatar
-            if ($request->hasFile('avatar')) {
-                $user->avatar = $request->file('avatar')->store('avatars', 'public');
-            }
-
-            $user->save();
-
-            // Création du token pour la réinitialisation du mot de passe
+            // Envoi du mail de réinitialisation du mot de passe
             $token = Password::createToken($user);
-
-            // Envoi de l'email pour définir le mot de passe
             $user->notify(new ResetPasswordNotification($token));
 
-            return redirect()->route('users.index')->with('success', 'Utilisateur ajouté avec succès. Un email a été envoyé pour définir le mot de passe.');
+            return redirect()
+                ->route('users.index')
+                ->with('success', 'Utilisateur ajouté avec succès. Un email a été envoyé pour définir le mot de passe.');
 
         } catch (\Exception $e) {
-            // Log l'erreur pour le diagnostic
-            Log::error('Erreur lors de l\'ajout de l\'utilisateur : ' . $e->getMessage());
+            Log::error('Erreur création utilisateur: ' . $e->getMessage(), [
+                'user_id' => $currentUser->id,
+                'data' => $request->except('password')
+            ]);
 
-            // Retourne un message d'erreur à la vue
-            return redirect()->back()->withErrors(['error' => 'Une erreur est survenue lors de l\'ajout de l\'utilisateur. Veuillez réessayer.']);
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['error' => 'Une erreur est survenue lors de l\'ajout de l\'utilisateur.']);
         }
     }
 
     public function edit(User $user)
-    {
+{
+    $currentUser = auth()->user();
+    $this->authorize('update', $user); // Ajouter cette ligne
+
+    [$roles, $schools] = $this->userService->getFormData($currentUser);
+
+    return view('users.form', compact('user', 'roles', 'schools'));
+}
+
+public function update(UserRequest $request, User $user)
+{
+    try {
         $currentUser = auth()->user();
+        $this->authorize('update', $user); // Ajouter cette ligne
 
-        if ($currentUser->hasRole('Super Administrateur')) {
-            $roles = Role::all();
-            $schools = School::all();
-        } elseif ($currentUser->hasRole('Administrateur')) {
-            if ($user->school_id != $currentUser->school_id) {
-                abort(403, 'Accès interdit.');
-            }
+        $this->userService->updateUser($user, $request, $currentUser);
 
-            $roles = Role::where('name', '!=', 'Super Administrateur')->get();
-            $schools = School::where('id', $currentUser->school_id)->get();
-        } else {
-            abort(403, 'Accès interdit');
-        }
-
-        return view('users.form', compact('user', 'roles', 'schools'));
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'Utilisateur modifié avec succès.');
+    } catch (\Exception $e) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->withErrors(['error' => 'Une erreur est survenue lors de la modification.']);
     }
+}
 
-    public function update(Request $request, User $user)
-    {
-        $currentUser = auth()->user();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'gender' => 'required|string|max:10',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role_id' => 'required|exists:roles,id',
-            'school_id' => 'required|exists:schools,id',
-        ]);
-
-        $assignedRole = Role::find($request->role_id);
-
-        if ($currentUser->hasRole('Administrateur')) {
-            if ($assignedRole->name === 'Super Administrateur') {
-                return back()->with('error', 'Vous ne pouvez pas assigner le rôle de Super Administrateur.');
-            }
-
-            if ($user->school_id != $currentUser->school_id || $request->school_id != $currentUser->school_id) {
-                return back()->with('error', 'Vous ne pouvez modifier que les utilisateurs de votre école.');
-            }
-        }
-
-        $user->fill($request->except('password', 'avatar'));
-
-        if ($request->filled('password')) {
-            $request->validate(['password' => 'string|min:8|confirmed']);
-            $user->password = Hash::make($request->password);
-        }
-
-        if ($request->hasFile('avatar')) {
-            $user->avatar = $request->file('avatar')->store('avatars', 'public');
-        }
-
-        $user->save();
-
-        return redirect()->route('users.index')->with('success', 'Utilisateur modifié avec succès.');
-    }
-
+    /**
+     * Supprime un utilisateur
+     *
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(User $user)
     {
-        $currentUser = auth()->user();
+        try {
+            $currentUser = auth()->user();
+            $this->authorize('delete', [$user, $currentUser]);
 
-        if ($currentUser->hasRole('Administrateur') && $user->school_id != $currentUser->school_id) {
-            abort(403, 'Vous ne pouvez supprimer que les utilisateurs de votre école.');
+            $this->userService->deleteUser($user);
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', 'Utilisateur supprimé avec succès.');
+
+        } catch (\Exception $e) {
+            Log::error('Erreur suppression utilisateur: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'deleter_id' => $currentUser->id
+            ]);
+
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'Une erreur est survenue lors de la suppression.']);
         }
-
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès.');
     }
 
-    // Afficher le formulaire pour modifier une école
-   
+    /**
+     * Recherche des utilisateurs
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search(Request $request)
+    {
+        $query = User::with(['role', 'school'])
+            ->orderBy('created_at', 'desc');
 
+        // Filtre par école pour les administrateurs
+        if (auth()->user()->hasRole('Administrateur')) {
+            $query->where('school_id', auth()->user()->school_id);
+        }
+
+        // Appliquer les filtres de recherche
+        if ($request->filled('search_id')) {
+            $query->where('id', 'like', '%' . $request->search_id . '%');
+        }
+
+        if ($request->filled('search_name')) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search_name . '%')
+                    ->orWhere('first_name', 'like', '%' . $request->search_name . '%')
+                    ->orWhere('last_name', 'like', '%' . $request->search_name . '%');
+            });
+        }
+
+        if ($request->filled('search_school')) {
+            $query->whereHas('school', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search_school . '%');
+            });
+        }
+
+        $users = $query->get();
+
+        return response()->json([
+            'users' => $users,
+            'html' => view('users.partials.users-table', compact('users'))->render()
+        ]);
+    }
 }

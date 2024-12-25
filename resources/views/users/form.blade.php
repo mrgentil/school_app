@@ -71,12 +71,12 @@
                             <label>
                                 <select class="select2" name="gender" required>
                                     <option
-                                        value="male" {{ old('gender', $user->gender ?? '') === 'male' ? 'selected' : '' }}>
-                                        Homme
+                                        value="Masculin" {{ old('gender', $user->gender ?? '') === 'Masculin' ? 'selected' : '' }}>
+                                        Masculin
                                     </option>
                                     <option
-                                        value="female" {{ old('gender', $user->gender ?? '') === 'female' ? 'selected' : '' }}>
-                                        Femme
+                                        value="Féminin" {{ old('gender', $user->gender ?? '') === 'Féminin' ? 'selected' : '' }}>
+                                        Féminin
                                     </option>
                                 </select>
                             </label>
