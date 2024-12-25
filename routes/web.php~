@@ -33,9 +33,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     //School Routes
     Route::resource('schools', \App\Http\Controllers\SchoolController::class);
-
-    //Student Routes
-    Route::resource('students', \App\Http\Controllers\StudentController::class);
 });
 
 
