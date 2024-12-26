@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class OptionController extends Controller
 {
-    protected OptionService $optionService;
+    protected $optionService;
 
     public function __construct(OptionService $optionService)
     {
@@ -30,7 +30,7 @@ class OptionController extends Controller
     public function create()
     {
         $this->authorize('create', Option::class);
-        // Si c'est un admin, on ne montre que son zécole
+        // Si c'est un admin, on ne montre que son école
         if (auth()->user()->canManageOwnOptions()) {
             $schools = School::where('id', auth()->user()->school_id)->get();
         } // Si c'est un super admin, on montre toutes les écoles

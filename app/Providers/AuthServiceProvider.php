@@ -3,12 +3,16 @@
 namespace App\Providers;
 
 use App\Models\Classe;
+use App\Models\Option;
+use App\Models\Promotion;
 use App\Models\Role;
 use App\Models\School;
 use App\Policies\ClassPolicy;
+use App\Policies\OptionPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SchoolPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\PromotionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
@@ -25,6 +29,8 @@ class AuthServiceProvider extends ServiceProvider
         Role::class => RolePolicy::class,
         School::class => SchoolPolicy::class,
         Classe::class => ClassPolicy::class,
+        Option::class => OptionPolicy::class,
+        Promotion::class => PromotionPolicy::class,
     ];
 
     /**
