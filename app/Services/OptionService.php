@@ -6,16 +6,30 @@ use App\Models\Option;
 
 class OptionService
 {
-    public function getOptionsForUser($user)
+    public function getOptionsList($currentUser, $filters = [])
     {
-        if ($user->canManageAllOptions()) {
-            return Option::with(['creator', 'school'])->latest()->get();
+        $query = Option::with(['school']); // Assurez-vous d'avoir la relation school définie dans le modèle
+
+        // Si l'utilisateur est administrateur, ne montrer que les options de son école
+        if ($currentUser->hasRole('Administrateur')) {
+            $query->whereHas('school', function($q) use ($currentUser) {
+                $q->where('id', $currentUser->school_id);
+            });
         }
 
-        return Option::with(['creator', 'school'])
-            ->where('created_by', $user->id)
-            ->latest()
-            ->get();
+        // Recherche par nom d'option
+        if (!empty($filters['name'])) {
+            $query->where('name', 'LIKE', "%{$filters['name']}%");
+        }
+
+        // Recherche par nom d'école
+        if (!empty($filters['school'])) {
+            $query->whereHas('school', function($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['school']}%");
+            });
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     public function store(array $data, $user)

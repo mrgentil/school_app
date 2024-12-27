@@ -28,12 +28,16 @@ class UserController extends Controller
      * @return \Illuminate\View\View
      */
     public function index()
-    {
-        $currentUser = auth()->user();
-        $users = $this->userService->getUsersList($currentUser);
+{
+    $currentUser = auth()->user();
+    $users = $this->userService->getUsersList($currentUser, [
+        'id' => request('id'),
+        'name' => request('name'),
+        'school' => request('school')
+    ]);
 
-        return view('users.index', compact('users'));
-    }
+    return view('users.index', compact('users'));
+}
 
     /**
      * Affiche le formulaire de création
@@ -150,38 +154,53 @@ public function update(UserRequest $request, User $user)
      */
     public function search(Request $request)
     {
-        $query = User::with(['role', 'school'])
-            ->orderBy('created_at', 'desc');
+        try {
+            $query = User::with(['role', 'school'])
+                ->orderBy('created_at', 'desc');
 
-        // Filtre par école pour les administrateurs
-        if (auth()->user()->hasRole('Administrateur')) {
-            $query->where('school_id', auth()->user()->school_id);
+            // Filtre par école pour les administrateurs
+            if (auth()->user()->hasRole('Administrateur')) {
+                $query->where('school_id', auth()->user()->school_id);
+            }
+
+            // Appliquer les filtres de recherche
+            if ($request->filled('search_id')) {
+                $query->where('id', 'like', '%' . $request->search_id . '%');
+            }
+
+            if ($request->filled('search_name')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->search_name . '%')
+                        ->orWhere('first_name', 'like', '%' . $request->search_name . '%')
+                        ->orWhere('last_name', 'like', '%' . $request->search_name . '%');
+                });
+            }
+
+            if ($request->filled('search_school')) {
+                $query->whereHas('school', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->search_school . '%');
+                });
+            }
+
+            // Journaliser la requête SQL et les bindings
+            Log::info($query->toSql());
+            Log::info($query->getBindings());
+
+            $users = $query->get();
+
+            return response()->json([
+                'users' => $users,
+                'html' => view('users.users-table', compact('users'))->render(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur dans la recherche d\'utilisateurs : ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => 'Une erreur est survenue lors de la recherche.',
+            ], 500);
         }
-
-        // Appliquer les filtres de recherche
-        if ($request->filled('search_id')) {
-            $query->where('id', 'like', '%' . $request->search_id . '%');
-        }
-
-        if ($request->filled('search_name')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search_name . '%')
-                    ->orWhere('first_name', 'like', '%' . $request->search_name . '%')
-                    ->orWhere('last_name', 'like', '%' . $request->search_name . '%');
-            });
-        }
-
-        if ($request->filled('search_school')) {
-            $query->whereHas('school', function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search_school . '%');
-            });
-        }
-
-        $users = $query->get();
-
-        return response()->json([
-            'users' => $users,
-            'html' => view('users.users-table', compact('users'))->render()
-        ]);
     }
+
 }

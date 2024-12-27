@@ -6,16 +6,30 @@ use App\Models\Promotion;
 
 class PromotionService
 {
-    public function getPromotionsForUser($user)
+    public function getPromotionsList($currentUser, $filters = [])
     {
-        if ($user->canManageAllPromotions()) {
-            return Promotion::with(['creator', 'school'])->latest()->get();
+        $query = Promotion::with(['school']); // Assurez-vous d'avoir la relation school définie
+
+        // Si l'utilisateur est administrateur, ne montrer que les promotions de son école
+        if ($currentUser->hasRole('Administrateur')) {
+            $query->whereHas('school', function($q) use ($currentUser) {
+                $q->where('id', $currentUser->school_id);
+            });
         }
 
-        return Promotion::with(['creator', 'school'])
-            ->where('created_by', $user->id)
-            ->latest()
-            ->get();
+        // Recherche par année/nom de promotion
+        if (!empty($filters['name'])) {
+            $query->where('name', 'LIKE', "%{$filters['name']}%");
+        }
+
+        // Recherche par nom d'école
+        if (!empty($filters['school'])) {
+            $query->whereHas('school', function($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['school']}%");
+            });
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     public function store(array $data, $user)

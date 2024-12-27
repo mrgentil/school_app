@@ -23,8 +23,12 @@ class ClasseController extends Controller
     // Ajoutez les autorisations manuellement dans chaque méthode
     public function index()
     {
-        $this->authorize('viewAny', Classe::class);
-        $classes = $this->classService->getClassesForUser(auth()->user());
+        $currentUser = auth()->user();
+        $classes = $this->classService->getClassesList($currentUser, [
+            'name' => request('name'),
+            'school' => request('school')
+        ]);
+
         return view('classes.index', compact('classes'));
     }
 

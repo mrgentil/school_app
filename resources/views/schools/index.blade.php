@@ -24,6 +24,22 @@
                         <h3>Liste Ecoles</h3>
                     </div>
                 </div>
+                <form class="mg-b-20" method="GET" action="{{ route('schools.index') }}">
+                    <div class="row gutters-8">
+                        <div class="col-8-xxxl col-xl-8 col-lg-8 col-12 form-group">
+                            <input type="text" name="name"
+                                   value="{{ request('name') }}"
+                                   placeholder="Recherche par nom ..."
+                                   class="form-control">
+                        </div>
+                        <div class="col-4-xxxl col-xl-4 col-lg-4 col-12 form-group d-flex">
+                            <button type="submit" class="fw-btn-fill btn-gradient-yellow btn-sm mr-2">Rechercher</button>
+                            @if(request()->has('name'))
+                                <a href="{{ route('schools.index') }}" class="fw-btn-fill btn-gradient-red btn-sm">Réinitialiser</a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table display data-table text-nowrap">
                         <thead>

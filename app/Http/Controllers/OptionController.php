@@ -21,8 +21,12 @@ class OptionController extends Controller
     // Ajoutez les autorisations manuellement dans chaque méthode
     public function index()
     {
-        $this->authorize('viewAny', Option::class);
-        $options = $this->optionService->getOptionsForUser(auth()->user());
+        $currentUser = auth()->user();
+        $options = $this->optionService->getOptionsList($currentUser, [
+            'name' => request('name'),
+            'school' => request('school')
+        ]);
+
         return view('options.index', compact('options'));
     }
 

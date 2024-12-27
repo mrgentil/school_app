@@ -24,19 +24,29 @@
                         <h3>Liste Promotions</h3>
                     </div>
                 </div>
-                <form class="mg-b-20">
+                <form class="mg-b-20" method="GET" action="{{ route('promotions.index') }}">
                     <div class="row gutters-8">
-                        <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                            <input type="text" placeholder="Recherche par identifiant ..." class="form-control">
+                        <div class="col-5-xxxl col-xl-5 col-lg-5 col-12 form-group">
+                            <input type="text" name="name"
+                                value="{{ request('name') }}"
+                                placeholder="Recherche par Année ..."
+                                class="form-control">
                         </div>
-                        <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
-                            <input type="text" placeholder="Recherche par Nom ..." class="form-control">
+                        <div class="col-5-xxxl col-xl-5 col-lg-5 col-12 form-group">
+                            <input type="text" name="school"
+                                value="{{ request('school') }}"
+                                placeholder="Recherche par École ..."
+                                class="form-control">
                         </div>
-                        <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                            <input type="text" placeholder="Recherche par Ecole ..." class="form-control">
-                        </div>
-                        <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
-                            <button type="submit" class="fw-btn-fill btn-gradient-yellow">Search</button>
+                        <div class="col-2-xxxl col-xl-2 col-lg-2 col-12 form-group d-flex">
+                            <button type="submit" class="fw-btn-fill btn-gradient-yellow btn-sm mr-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            @if(request()->hasAny(['name', 'school']))
+                                <a href="{{ route('promotions.index') }}" class="fw-btn-fill btn-gradient-red btn-sm">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </form>

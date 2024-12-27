@@ -13,15 +13,21 @@ class SchoolService
     /**
      * Récupère les écoles selon les droits de l'utilisateur
      */
-    public function getSchools($user): Collection
+    public function getSchoolsList($currentUser, $filters = [])
     {
         $query = School::query();
 
-        if ($user->hasRole('Administrateur')) {
-            $query->where('id', $user->school_id);
+        // Si l'utilisateur est administrateur, ne montrer que son école
+        if ($currentUser->hasRole('Administrateur')) {
+            $query->where('id', $currentUser->school_id);
         }
 
-        return $query->orderBy('created_at', 'desc')->get();
+        // Appliquer le filtre de recherche par nom
+        if (!empty($filters['name'])) {
+            $query->where('name', 'LIKE', "%{$filters['name']}%");
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     /**

@@ -21,8 +21,12 @@ class PromotionController extends Controller
     // Ajoutez les autorisations manuellement dans chaque méthode
     public function index()
     {
-        $this->authorize('viewAny', Promotion::class);
-        $promotions = $this->promotionService->getPromotionsForUser(auth()->user());
+        $currentUser = auth()->user();
+        $promotions = $this->promotionService->getPromotionsList($currentUser, [
+            'name' => request('name'),
+            'school' => request('school')
+        ]);
+
         return view('promotions.index', compact('promotions'));
     }
 

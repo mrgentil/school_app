@@ -1,0 +1,17 @@
+.search-spinner {
+    display: inline-block;
+    margin-left: 10px;
+    color: #ffc107;
+}
+
+.search-form {
+    position: relative;
+}
+
+.search-form .form-control {
+    padding-right: 30px;
+}
+
+.tooltip {
+    z-index: 1000;
+}

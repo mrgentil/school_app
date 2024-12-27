@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -25,14 +26,16 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //User  ROutes
-    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::resource('users', UserController::class)->except(['show']);
     Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
+
 
     //Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class);
 
     //School Routes
     Route::resource('schools', \App\Http\Controllers\SchoolController::class);
+    Route::get('/schools/search', [SchoolController::class, 'search'])->name('schools.search');
 
     //Student Routes
     Route::resource('students', \App\Http\Controllers\StudentController::class);

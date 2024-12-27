@@ -13,17 +13,35 @@ class UserService
     /**
      * Récupère la liste des utilisateurs selon les droits
      */
-    public function getUsersList($currentUser)
+    public function getUsersList($currentUser, array $filters = [])
     {
-        $query = User::with('role', 'school')->orderBy('created_at', 'desc');
+        $query = User::with(['role', 'school']);
 
+        // Si l'utilisateur est administrateur, filtrer par école
         if ($currentUser->hasRole('Administrateur')) {
             $query->where('school_id', $currentUser->school_id);
-        } elseif (!$currentUser->hasRole('Super Administrateur')) {
-            throw new AuthorizationException('Accès interdit');
         }
 
-        return $query->get();
+        // Appliquer les filtres de recherche
+        if (!empty($filters['id'])) {
+            $query->where('id', 'LIKE', "%{$filters['id']}%");
+        }
+
+        if (!empty($filters['name'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['name']}%")
+                  ->orWhere('first_name', 'LIKE', "%{$filters['name']}%")
+                  ->orWhere('last_name', 'LIKE', "%{$filters['name']}%");
+            });
+        }
+
+        if (!empty($filters['school'])) {
+            $query->whereHas('school', function ($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['school']}%");
+            });
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     /**
@@ -131,38 +149,39 @@ class UserService
     }
 
     /**
- * Supprime un utilisateur
- *
- * @param User $user
- * @throws \Exception
- * @return bool
- */
-public function deleteUser(User $user): bool
-{
-    try {
-        // Vérifier si l'utilisateur n'est pas le dernier Super Admin
-        if ($user->hasRole('Super Administrateur')) {
-            $superAdminCount = User::whereHas('role', function ($query) {
-                $query->where('name', 'Super Administrateur');
-            })->count();
+     * Supprime un utilisateur
+     *
+     * @param User $user
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteUser(User $user): bool
+    {
+        try {
+            // Vérifier si l'utilisateur n'est pas le dernier Super Admin
+            if ($user->hasRole('Super Administrateur')) {
+                $superAdminCount = User::whereHas('role', function ($query) {
+                    $query->where('name', 'Super Administrateur');
+                })->count();
 
-            if ($superAdminCount <= 1) {
-                throw new \Exception('Impossible de supprimer le dernier Super Administrateur.');
+                if ($superAdminCount <= 1) {
+                    throw new \Exception('Impossible de supprimer le dernier Super Administrateur.');
+                }
             }
-        }
 
-        // Supprimer l'avatar si existe
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-        // Supprimer l'utilisateur
-        return $user->delete();
+            // Supprimer l'avatar si existe
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            // Supprimer l'utilisateur
+            return $user->delete();
 
-    } catch (\Exception $e) {
-        Log::error('Erreur lors de la suppression de l\'utilisateur: ' . $e->getMessage(), [
-            'user_id' => $user->id
-        ]);
-        throw $e;
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la suppression de l\'utilisateur: ' . $e->getMessage(), [
+                'user_id' => $user->id
+            ]);
+            throw $e;
+        }
     }
-}
+
 }

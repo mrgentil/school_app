@@ -2,21 +2,35 @@
 
 namespace App\Services;
 
-use App\Models\Class;
 use App\Models\Classe;
+
 
 class ClassService
 {
-    public function getClassesForUser($user)
+    public function getClassesList($currentUser, $filters = [])
     {
-        if ($user->canManageAllClasses()) {
-            return Classe::with(['creator', 'school'])->latest()->get();
+        $query = Classe::with(['school']); // Assurez-vous d'avoir la relation school définie dans le modèle
+
+        // Si l'utilisateur est administrateur, ne montrer que les classes de son école
+        if ($currentUser->hasRole('Administrateur')) {
+            $query->whereHas('school', function($q) use ($currentUser) {
+                $q->where('id', $currentUser->school_id);
+            });
         }
 
-        return Classe::with(['creator', 'school'])
-            ->where('created_by', $user->id)
-            ->latest()
-            ->get();
+        // Recherche par nom de classe
+        if (!empty($filters['name'])) {
+            $query->where('name', 'LIKE', "%{$filters['name']}%");
+        }
+
+        // Recherche par nom d'école
+        if (!empty($filters['school'])) {
+            $query->whereHas('school', function($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['school']}%");
+            });
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     public function store(array $data, $user)

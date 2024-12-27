@@ -21,13 +21,12 @@ class SchoolController extends Controller
 
     public function index()
     {
-        try {
-            $schools = $this->schoolService->getSchools(auth()->user());
-            return view('schools.index', compact('schools'));
-        } catch (\Exception $e) {
-            Log::error('Erreur récupération écoles: ' . $e->getMessage());
-            return back()->withErrors('Une erreur est survenue lors du chargement des écoles.');
-        }
+        $currentUser = auth()->user();
+        $schools = $this->schoolService->getSchoolsList($currentUser, [
+            'name' => request('name')
+        ]);
+
+        return view('schools.index', compact('schools'));
     }
 
     public function create()
