@@ -7,7 +7,7 @@
         <ul>
             <li>
                 <a href="index.html">Home</a>
-            </li>
+            </li>No prompt was provided.
             <li>Admin</li>
         </ul>
     </div>

@@ -62,9 +62,9 @@ class User extends Authenticatable
     }
 
     public function school()
-    {
-        return $this->belongsTo(School::class);
-    }
+{
+    return $this->belongsTo(School::class);
+}
 
     public function hasRole($roleName)
     {
@@ -74,6 +74,11 @@ class User extends Authenticatable
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
     }
 
 

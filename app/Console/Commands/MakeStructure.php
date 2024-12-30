@@ -28,8 +28,8 @@ class MakeStructure extends Command
         $filePath = "$directory/$name.php"; // Chemin complet du fichier
 
         // Vérifie si le type est valide
-        if (!in_array($type, ['Service', 'Trait', 'Policy'])) {
-            $this->error("Type non valide. Utilisez 'Service', 'Trait' ou 'Policy'.");
+        if (!in_array($type, ['Services', 'Traits', 'Policies'])) {
+            $this->error("Type non valide. Utilisez 'Services', 'Traits' ou 'Policys'.");
             return;
         }
 
