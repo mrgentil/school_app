@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasStudentPermissions;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
-    use HasStudentPermissions;
-
     protected $fillable = [
         'user_id',
         'registration_number',
@@ -19,6 +16,12 @@ class Student extends Model
         'option_id',
         'promotion_id'
     ];
+
+    // Relations
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function school(): BelongsTo
     {
@@ -45,9 +48,20 @@ class Student extends Model
         return $this->hasMany(StudentHistory::class);
     }
 
-    public function user(): BelongsTo
+    // Scopes
+    public function scopeSearch($query, $search)
     {
-        return $this->belongsTo(User::class);
+        return $query->where(function ($q) use ($search) {
+            $q->where('registration_number', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('first_name', 'like', "%{$search}%");
+                });
+        });
     }
 
+    public function scopeForSchool($query, $schoolId)
+    {
+        return $query->where('school_id', $schoolId);
+    }
 }

@@ -2,51 +2,56 @@
 
 namespace App\Services;
 
+use App\Models\Classe;
 use App\Models\Student;
-use App\Models\StudentHistory;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Models\School;
+use App\Models\Option;
+use App\Models\Promotion;
+use Illuminate\Support\Str;
 
 class StudentService
 {
+    public function getFormData(?Student $student = null): array
+    {
+        $user = auth()->user();
+
+        if ($user->role->name === 'Super Administrateur') {
+            $availableStudentUsers = User::role('Élève')->whereDoesntHave('student')->get();
+            $schools = School::all();
+            $classes = Classe::all();
+            $options = Option::all();
+            $promotions = Promotion::all();
+        } else {
+            $availableStudentUsers = User::role('Élève')
+                ->where('school_id', $user->school_id)
+                ->whereDoesntHave('student')
+                ->get();
+            $schools = School::where('id', $user->school_id)->get();
+            $classes = Classe::where('school_id', $user->school_id)->get();
+            $options = Option::where('school_id', $user->school_id)->get();
+            $promotions = Promotion::where('school_id', $user->school_id)->get();
+        }
+
+        return compact('student', 'availableStudentUsers', 'schools', 'classes', 'options', 'promotions');
+    }
+
     public function createStudent(array $data): Student
     {
-        // Récupérer l'utilisateur élève
-        $studentUser = User::findOrFail($data['user_id']);
+        $user = User::findOrFail($data['user_id']);
 
-        // Générer le numéro d'inscription
-        $registrationNumber = $this->generateRegistrationNumber($studentUser);
-
-        // Créer l'étudiant
-        $student = Student::create([
-            'user_id' => $studentUser->id,
-            'registration_number' => $registrationNumber,
-            'school_id' => $studentUser->school_id,
+        return Student::create([
+            'user_id' => $user->id,
+            'registration_number' => $this->generateRegistrationNumber($user),
+            'school_id' => $user->school_id,
             'class_id' => $data['class_id'],
             'option_id' => $data['option_id'] ?? null,
             'promotion_id' => $data['promotion_id']
         ]);
-
-        // Créer l'historique initial
-        $this->createHistory($student, $data);
-
-        return $student;
     }
 
     public function updateStudent(Student $student, array $data): Student
     {
-        // Vérifier s'il y a des changements dans les données scolaires
-        $hasChanges = $this->hasSchoolInfoChanges($student, $data);
-
-        // Si il y a des changements, créer un nouvel historique
-        if ($hasChanges) {
-            // Fermer l'historique actuel
-            $this->closeCurrentHistory($student);
-            // Créer un nouvel historique
-            $this->createHistory($student, $data);
-        }
-
-        // Mettre à jour l'étudiant
         $student->update([
             'class_id' => $data['class_id'],
             'option_id' => $data['option_id'] ?? null,
@@ -56,13 +61,19 @@ class StudentService
         return $student;
     }
 
-    private function generateRegistrationNumber($user): string
+    public function deleteStudent(Student $student): void
     {
-        // Prendre les 2 premières lettres du nom et prénom
-        $namePart = strtoupper(substr($user->name, 0, 2) . substr($user->first_name, 0, 2));
+        $student->histories()->delete();
+        $student->delete();
+    }
 
-        // Prendre les 2 premières lettres de l'école
-        $schoolPart = strtoupper(substr($user->school->name, 0, 2));
+    private function generateRegistrationNumber(User $user): string
+    {
+        // Initiales du nom (2 premières lettres)
+        $namePart = Str::upper(Str::substr($user->name, 0, 2));
+
+        // 2 premières lettres de l'école
+        $schoolPart = Str::upper(Str::substr($user->school->name, 0, 2));
 
         // Année actuelle
         $year = date('Y');
@@ -72,37 +83,5 @@ class StudentService
         $idPart = str_pad($lastId, 4, '0', STR_PAD_LEFT);
 
         return $namePart . $schoolPart . $year . $idPart;
-    }
-
-    private function createHistory(Student $student, array $data): void
-    {
-        StudentHistory::create([
-            'student_id' => $student->id,
-            'school_id' => $student->school_id,
-            'class_id' => $data['class_id'],
-            'option_id' => $data['option_id'] ?? null,
-            'promotion_id' => $data['promotion_id'],
-            'start_date' => Carbon::now(),
-            'status' => 'active',
-            'notes' => $data['notes'] ?? null
-        ]);
-    }
-
-    private function closeCurrentHistory(Student $student): void
-    {
-        StudentHistory::where('student_id', $student->id)
-            ->where('status', 'active')
-            ->whereNull('end_date')
-            ->update([
-                'end_date' => Carbon::now(),
-                'status' => 'inactive'
-            ]);
-    }
-
-    private function hasSchoolInfoChanges(Student $student, array $data): bool
-    {
-        return $student->class_id != $data['class_id'] ||
-            $student->option_id != ($data['option_id'] ?? null) ||
-            $student->promotion_id != $data['promotion_id'];
     }
 }

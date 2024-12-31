@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentHistoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -50,9 +51,21 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     //Promotion Routes
     Route::resource('promotions', \App\Http\Controllers\PromotionController::class);
 
-    // Route pour l'historique des étudiants
-    Route::get('students/{student}/history', [StudentController::class, 'history'])
-        ->name('students.history');
+    // Routes pour l'historique
+    Route::get('histories', [StudentHistoryController::class, 'index'])
+        ->name('histories.index');
+    Route::get('histories/create', [StudentHistoryController::class, 'create'])
+        ->name('histories.create');
+    Route::post('histories', [StudentHistoryController::class, 'store'])
+        ->name('histories.store');
+    Route::get('histories/{history}/edit', [StudentHistoryController::class, 'edit'])
+        ->name('histories.edit');
+    Route::put('histories/{history}', [StudentHistoryController::class, 'update'])
+        ->name('histories.update');
+    Route::delete('histories/{history}', [StudentHistoryController::class, 'destroy'])
+        ->name('histories.destroy');
+    Route::get('histories/{history}', [StudentHistoryController::class, 'show'])  // Ajout de la route show
+    ->name('histories.show');
 });
 
 

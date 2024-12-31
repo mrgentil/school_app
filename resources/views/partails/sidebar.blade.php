@@ -85,15 +85,12 @@
                 <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Eleves</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('students.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Eleves</a>
+                        <a href="{{route('students.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Admission Eleve</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('students.create')}}" class="nav-link"><i
-                                class="fas fa-angle-right"></i>Ajouter Eleve</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="admit-form.html" class="nav-link"><i
-                                class="fas fa-angle-right"></i>Admission Form</a>
+                        <a href="{{ route('histories.index') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Historique Eleve
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="student-promotion.html" class="nav-link"><i

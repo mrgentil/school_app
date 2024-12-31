@@ -13,13 +13,19 @@ class StudentHistory extends Model
         'class_id',
         'option_id',
         'promotion_id',
+       'academic_year',
+        'semester',
+        'average_score',
+        'rank',
+        'decision',
+        'teacher_remarks',
+        'conduct_grade',
+        'attendance_record',
         'start_date',
         'end_date',
-        'status',
-        'notes'
+        'status'
     ];
 
-    // Définir les attributs qui doivent être convertis en dates
     protected $dates = [
         'start_date',
         'end_date',
@@ -27,18 +33,7 @@ class StudentHistory extends Model
         'updated_at'
     ];
 
-    // Convertir manuellement start_date en Carbon si nécessaire
-    public function getStartDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value) : null;
-    }
-
-    // Convertir manuellement end_date en Carbon si nécessaire
-    public function getEndDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value) : null;
-    }
-
+    // Relations
     public function student()
     {
         return $this->belongsTo(Student::class);
@@ -62,5 +57,16 @@ class StudentHistory extends Model
     public function promotion()
     {
         return $this->belongsTo(Promotion::class);
+    }
+
+    // Accesseurs
+    public function getFormattedAverageAttribute()
+    {
+        return $this->average_score ? number_format($this->average_score, 2) . '/20' : '-';
+    }
+
+    public function getFormattedRankAttribute()
+    {
+        return $this->rank ? $this->rank . 'ème' : '-';
     }
 }

@@ -11,14 +11,21 @@ return new class extends Migration
         Schema::create('student_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->foreignId('school_id')->constrained('schools');
-            $table->foreignId('class_id')->constrained('classes');
-            $table->foreignId('option_id')->nullable()->constrained('options');
-            $table->foreignId('promotion_id')->constrained('promotions');
-            $table->date('start_date');
-            $table->date('end_date')->nullable();
-            $table->string('status')->default('active'); // active, completed, transferred, dropped
-            $table->text('notes')->nullable();
+            $table->foreignId('school_id')->nullable()->constrained('schools')->onDelete('set null');
+            $table->foreignId('class_id')->nullable()->constrained('classes')->onDelete('set null');
+            $table->foreignId('option_id')->nullable()->constrained('options')->onDelete('set null');
+            $table->foreignId('promotion_id')->nullable()->constrained('promotions')->onDelete('set null');
+            $table->string('academic_year');
+            $table->enum('semester', ['Semestre 1', 'Semestre 2']);
+            $table->decimal('average_score', 5, 2)->nullable();
+            $table->integer('rank')->nullable();
+            $table->enum('decision', ['En cours', 'Admis', 'Ajourné', 'Redouble'])->default('En cours');
+            $table->text('teacher_remarks')->nullable();
+            $table->string('conduct_grade')->nullable();
+            $table->text('attendance_record')->nullable();
+            $table->dateTime('start_date');
+            $table->dateTime('end_date')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

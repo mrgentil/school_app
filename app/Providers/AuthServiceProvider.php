@@ -8,10 +8,12 @@ use App\Models\Promotion;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\Student;
+use App\Models\StudentHistory;
 use App\Policies\ClassPolicy;
 use App\Policies\OptionPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SchoolPolicy;
+use App\Policies\StudentHistoryPolicy;
 use App\Policies\StudentPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\PromotionPolicy;
@@ -34,6 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         Option::class => OptionPolicy::class,
         Promotion::class => PromotionPolicy::class,
         Student::class => StudentPolicy::class,
+        StudentHistory::class => StudentHistoryPolicy::class,
     ];
 
     /**

@@ -1,31 +1,37 @@
 @extends('layouts.main')
-@section('title', 'Liste des élèves')
-
+@section('title', 'Liste Historique Eleve')
+@section('meta_description')
+    {{ "Formulaire d'ajout d'un nouveau historique" }}
+@endsection
 @section('content')
     <div class="dashboard-content-one">
+        <!-- Breadcubs Area Start Here -->
         <div class="breadcrumbs-area">
-            <h3>Élèves</h3>
+            <h3>Historique</h3>
             <ul>
-                <li><a href="{{ url('/') }}">Accueil</a></li>
-                <li>Liste des élèves</li>
+                <li>
+                    <a href="{{ url('/') }}">Accueil</a>
+                </li>
+                <li>Les Historiques</li>
             </ul>
         </div>
-
+        <!-- Breadcubs Area End Here -->
+        <!-- User Table Area Start Here -->
         <div class="card height-auto">
             <div class="card-body">
                 <div class="heading-layout1">
                     <div class="item-title">
-                        <h3>Liste des élèves</h3>
+                        <h3>Liste Historique Elève</h3>
                     </div>
-                    @can('create', App\Models\Student::class)
+                    @can('create', App\Models\StudentHistory::class)
                         <div class="dropdown">
-                            <a href="{{ route('students.create') }}" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">
-                                Ajouter un élève
+                            <a href="{{ route('histories.create') }}"
+                               class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">
+                                Ajouter un historique
                             </a>
                         </div>
                     @endcan
                 </div>
-
                 <form class="mg-b-20">
                     <div class="row gutters-8">
                         <div class="col-lg-4 col-12 form-group">
@@ -54,53 +60,61 @@
                         </div>
                     </div>
                 </form>
-
                 <div class="table-responsive">
                     <table class="table display data-table text-nowrap">
                         <thead>
                         <tr>
-                            <th>N° Inscription</th>
-                            <th>Nom</th>
-                            <th>École</th>
+                            <th>#</th>
+                            <th>Nom Elève</th>
+                            <th>Nom Ecole</th>
                             <th>Classe</th>
-                            <th>Option</th>
-                            <th>Promotion</th>
+                            <th>Année Scolaire</th>
+                            <th>Semestre</th>
+                            <th>Note</th>
+                            <th>Décision</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($students as $student)
+                        @foreach ($histories as $history)
                             <tr>
-                                <td>{{ $student->registration_number }}</td>
-                                <td>{{ $student->user->name }}</td>
-                                <td>{{ $student->school->name }}</td>
-                                <td>{{ $student->class->name }}</td>
-                                <td>{{ $student->option->name ?? 'N/A' }}</td>
-                                <td>{{ $student->promotion->name }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $history->student->user->name }}</td>
+                                <td>{{ $history->school->name }}</td>
+                                <td>{{ $history->class->name }}</td>
+                                <td>{{ $history->academic_year }}</td>
+                                <td>{{ $history->semester }}</td>
+                                <td>{{ $history->average_score ?? '-' }}/20</td>
+                                <td>
+                                    <span
+                                        class="badge {{ $history->decision === 'Admis' ? 'badge-success' : 'badge-warning' }}">
+                                        {{ $history->decision }}
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                           aria-expanded="false">
                                             <span class="flaticon-more-button-of-three-dots"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            @can('view', $student)
-                                                <a class="dropdown-item" href="{{ route('students.show', $student) }}">
-                                                    <i class="fas fa-eye text-primary"></i> Voir
+                                            @can('view', $history)
+                                                <a class="dropdown-item" href="{{ route('histories.show', $history) }}">
+                                                    <i class="fas fa-eye text-primary"></i> Voir détails
                                                 </a>
                                             @endcan
-                                            @can('update', $student)
-                                                <a class="dropdown-item" href="{{ route('students.edit', $student) }}">
-                                                    <i class="fas fa-edit text-dark-pastel-green"></i> Modifier
+                                            @can('update', $history)
+                                                <a class="dropdown-item" href="{{ route('histories.edit', $history) }}">
+                                                    <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                                 </a>
                                             @endcan
-
-                                            @can('delete', $student)
-                                                <form action="{{ route('students.destroy', $student) }}" method="POST"
-                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élève ?');">
+                                            @can('delete', $history)
+                                                <form action="{{ route('histories.destroy', $history) }}" method="POST"
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet historique ?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item">
-                                                        <i class="fas fa-trash text-orange-red"></i> Supprimer
+                                                        <i class="fas fa-times text-orange-red"></i> Supprimer
                                                     </button>
                                                 </form>
                                             @endcan
@@ -112,7 +126,6 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $students->links() }}
             </div>
         </div>
     </div>
