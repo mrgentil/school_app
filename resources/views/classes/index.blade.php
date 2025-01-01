@@ -43,7 +43,10 @@
                         <tr>
                             <th>#</th>
                             <th>Nom</th>
-                            <th>Ecole</th>
+                            <th>Section</th>
+                            <th>Niveau</th>
+                            <th>Option</th>
+                            <th>École</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -52,6 +55,9 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $classe->name }}</td>
+                                <td>{{ $classe->section ?? '-' }}</td>
+                                <td>{{ $classe->level }}</td>
+                                <td>{{ $classe->option->name ?? '-' }}</td>
                                 <td>{{ $classe->school->name }}</td>
                                 <td>
                                     <div class="dropdown">
@@ -61,7 +67,8 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
                                             @can('update', $classe)
-                                                <a class="dropdown-item" href="{{ route('classes.edit', $classe->id) }}">
+                                                <a class="dropdown-item"
+                                                   href="{{ route('classes.edit', $classe->id) }}">
                                                     <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                                 </a>
                                             @endcan

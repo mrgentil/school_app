@@ -20,4 +20,9 @@ class Option extends Model
     {
         return $this->belongsTo(School::class);
     }
+
+    public function classes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Classe::class);
+    }
 }

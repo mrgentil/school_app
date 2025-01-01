@@ -87,7 +87,19 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->first_name }}</td>
                                 <td>{{ $user->last_name }}</td>
-                                <td>{{ $user->gender }}</td>
+                                <td class="text-center">
+                                    @if($user->gender === 'Masculin')
+                                        <div class="gender-avatar-custom male" title="Masculin">
+                                            <img src="{{ asset('img/figure/student2.png') }}" alt="Masculin">
+                                        </div>
+                                    @elseif($user->gender === 'Féminin')
+                                        <div class="gender-avatar-custom female" title="Féminin">
+                                            <img src="{{ asset('img/figure/student3.png') }}" alt="Féminin">
+                                        </div>
+                                    @else
+                                        {{ $user->gender }}
+                                    @endif
+                                </td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->adress }}</td>
                                 <td>{{ $user->phone ?? 'N/A' }}</td>

@@ -112,7 +112,7 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $students->links() }}
+{{--                {{ $students->links() }}--}}
             </div>
         </div>
     </div>

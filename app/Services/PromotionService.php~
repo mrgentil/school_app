@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Promotion;
 use App\Models\Student;
 use App\Models\StudentHistory;
-use App\Models\Classe;
+use App\Models\Classes;
 use Illuminate\Support\Facades\DB;
 
 class PromotionService
@@ -16,7 +16,7 @@ class PromotionService
         $query = Promotion::with(['school']);
 
         if ($currentUser->hasRole('Administrateur')) {
-            $query->whereHas('school', function ($q) use ($currentUser) {
+            $query->whereHas('school', function($q) use ($currentUser) {
                 $q->where('id', $currentUser->school_id);
             });
         }
@@ -26,7 +26,7 @@ class PromotionService
         }
 
         if (!empty($filters['school'])) {
-            $query->whereHas('school', function ($q) use ($filters) {
+            $query->whereHas('school', function($q) use ($filters) {
                 $q->where('name', 'LIKE', "%{$filters['school']}%");
             });
         }
@@ -60,7 +60,7 @@ class PromotionService
         try {
             DB::beginTransaction();
 
-            $targetClass = Classe::findOrFail($targetClassId);
+            $targetClass = Classes::findOrFail($targetClassId);
             $promotion = $this->createPromotionRecord($targetClass, $academicYear);
 
             foreach ($studentIds as $studentId) {
@@ -82,7 +82,7 @@ class PromotionService
         }
     }
 
-    private function createPromotionRecord(Classe $targetClass, string $academicYear): Promotion
+    private function createPromotionRecord(Classes $targetClass, string $academicYear): Promotion
     {
         return Promotion::create([
             'name' => "Promotion {$academicYear}",
@@ -106,7 +106,7 @@ class PromotionService
             && $currentHistory->decision === 'Admis';
     }
 
-    private function promoteStudent(Student $student, Classe $targetClass, Promotion $promotion, string $academicYear): void
+    private function promoteStudent(Student $student, Classes $targetClass, Promotion $promotion, string $academicYear): void
     {
         // Fermer l'historique actuel
         $student->histories()
@@ -139,11 +139,11 @@ class PromotionService
 
     public function getEligibleStudents($schoolId, $currentAcademicYear)
     {
-        return Student::with(['user', 'class', 'histories' => function ($query) {
-            $query->where('status', 'active');
-        }])
+        return Student::with(['user', 'class', 'histories' => function($query) {
+                $query->where('status', 'active');
+            }])
             ->where('school_id', $schoolId)
-            ->whereHas('histories', function ($query) {
+            ->whereHas('histories', function($query) {
                 $query->where('status', 'active')
                     ->where('decision', 'Admis')
                     ->where('average_score', '>=', 10);

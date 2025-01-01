@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentHistoryController;
+use App\Http\Controllers\StudentPromotionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -66,6 +67,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         ->name('histories.destroy');
     Route::get('histories/{history}', [StudentHistoryController::class, 'show'])  // Ajout de la route show
     ->name('histories.show');
+
+   // Routes pour la promotion des élèves
+   Route::get('student-promotions', [StudentPromotionController::class, 'index'])
+   ->name('student-promotions.index');
+Route::get('student-promotions/create', [StudentPromotionController::class, 'create'])
+   ->name('student-promotions.create');
+Route::post('student-promotions/promote', [StudentPromotionController::class, 'promote'])
+   ->name('student-promotions.promote');
 });
 
 

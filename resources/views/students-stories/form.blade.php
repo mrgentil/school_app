@@ -65,7 +65,7 @@
 
                         <div class="col-md-3 form-group">
                             <label>Semestre <span class="text-danger">*</span></label>
-                            <select name="semester" class="form-control" required>
+                            <select name="semester" class="form-control select2" required>
                                 <option value="">Sélectionner</option>
                                 <option value="Semestre 1" {{ old('semester', $history->semester ?? '') == 'Semestre 1' ? 'selected' : '' }}>
                                     Semestre 1
@@ -81,7 +81,7 @@
 
                         <div class="col-md-3 form-group">
                             <label>Classe <span class="text-danger">*</span></label>
-                            <select name="class_id" class="form-control" required>
+                            <select name="class_id" class="form-control select2" required>
                                 <option value="">Sélectionner</option>
                                 @foreach($classes as $class)
                                     <option value="{{ $class->id }}"
@@ -97,7 +97,7 @@
 
                         <div class="col-md-3 form-group">
                             <label>Option</label>
-                            <select name="option_id" class="form-control">
+                            <select name="option_id" class="form-control select2">
                                 <option value="">Sélectionner</option>
                                 @foreach($options as $option)
                                     <option value="{{ $option->id }}"
@@ -140,7 +140,7 @@
 
                         <div class="col-md-4 form-group">
                             <label>Décision</label>
-                            <select name="decision" class="form-control">
+                            <select name="decision" class="form-control select2">
                                 <option value="En cours" {{ old('decision', $history->decision ?? '') == 'En cours' ? 'selected' : '' }}>
                                     En cours
                                 </option>
@@ -166,7 +166,7 @@
 
                         <div class="col-md-6 form-group">
                             <label>Note de conduite</label>
-                            <select name="conduct_grade" class="form-control">
+                            <select name="conduct_grade" class="form-control select2">
                                 <option value="">Sélectionner</option>
                                 <option value="Excellent" {{ old('conduct_grade', $history->conduct_grade ?? '') == 'Excellent' ? 'selected' : '' }}>
                                     Excellent

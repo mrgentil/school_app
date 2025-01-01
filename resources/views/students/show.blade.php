@@ -93,7 +93,13 @@
                             <tbody>
                             @foreach($student->histories as $history)
                                 <tr>
-                                    <td>{{ $history->start_date->format('d/m/Y') }}</td>
+                                    <td>
+                                        @if($history->start_date instanceof \Carbon\Carbon)
+                                            {{ $history->start_date->format('d/m/Y') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($history->start_date)->format('d/m/Y') }}
+                                        @endif
+                                    </td>
                                     <td>{{ $history->school->name }}</td>
                                     <td>{{ $history->class->name }}</td>
                                     <td>{{ $history->option->name ?? '-' }}</td>

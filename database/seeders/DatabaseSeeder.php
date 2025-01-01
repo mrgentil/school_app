@@ -19,9 +19,14 @@ class DatabaseSeeder extends Seeder
             //ClassTableSeeder::class,
             //PromotionTableSeeder::class,
             //OptionTableSeeder::class,
-            SchoolTableSeeder::class,
+            SchoolSeeder::class,
             RolesTableSeeder::class,
             UsersTableSeeder::class,
+            OptionSeeder::class,
+            ClassSeeder::class,
+            PromotionSeeder::class,
+            StudentSeeder::class,
+            StudentHistorySeeder::class,
         ]);
 
       /* // Générer 20 écoles

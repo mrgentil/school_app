@@ -46,18 +46,6 @@
                 </ul>
             </li>
             <li class="nav-item sidebar-nav-item">
-                <a href="#" class="nav-link"><i class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Classes</span></a>
-                <ul class="nav sub-group-menu">
-                    <li class="nav-item">
-                        <a href="{{route('classes.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Classes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{route('classes.create')}}" class="nav-link"><i
-                                class="fas fa-angle-right"></i>Ajouter Classe</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item sidebar-nav-item">
                 <a href="#" class="nav-link"><i class="flaticon-settings-work-tool"></i><span>Options</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
@@ -66,6 +54,18 @@
                     <li class="nav-item">
                         <a href="{{route('options.create')}}" class="nav-link"><i
                                 class="fas fa-angle-right"></i>Ajouter Option</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Classes</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{{route('classes.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Classes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('classes.create')}}" class="nav-link"><i
+                                class="fas fa-angle-right"></i>Ajouter Classe</a>
                     </li>
                 </ul>
             </li>
@@ -93,8 +93,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="student-promotion.html" class="nav-link"><i
-                                class="fas fa-angle-right"></i>Student Promotion</a>
+                        <a href="{{ route('student-promotions.index') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Promotion des élèves
+                        </a>
                     </li>
                 </ul>
             </li>

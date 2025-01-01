@@ -9,7 +9,8 @@ class Classe extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'created_by', 'school_id'];
+
+    protected $fillable = ['name', 'created_by', 'school_id','level','option_id','section'];
 
     public function creator()
     {
@@ -19,5 +20,10 @@ class Classe extends Model
     public function school()
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function option()
+    {
+        return $this->belongsTo(Option::class);
     }
 }

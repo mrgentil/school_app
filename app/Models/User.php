@@ -81,5 +81,20 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    public function canManagePromotions(): bool
+{
+    return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+}
+
+public function canManageAllPromotions(): bool
+{
+    return $this->hasRole('Super Administrateur');
+}
+
+public function canManageOwnPromotions(): bool
+{
+    return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+}
+
 
 }

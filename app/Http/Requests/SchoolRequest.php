@@ -23,7 +23,7 @@ class SchoolRequest extends FormRequest
             ],
             'adress' => 'required|string|max:255',
             'logo' => [
-                $this->isMethod('PUT') ? 'nullable' : 'required',
+                $this->isMethod('PUT') ? 'nullable' : '',
                 'image',
                 'mimes:jpeg,png,jpg,gif',
                 'max:2048'
