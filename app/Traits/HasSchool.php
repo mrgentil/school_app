@@ -20,4 +20,9 @@ trait HasSchool
     {
         return $this->school_id === $user->school_id;
     }
+
+    public function scopeForSchool($query, $schoolId)
+    {
+        return $query->where('school_id', $schoolId);
+    }
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentHistoryController;
 use App\Http\Controllers\StudentPromotionController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -68,13 +70,41 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('histories/{history}', [StudentHistoryController::class, 'show'])  // Ajout de la route show
     ->name('histories.show');
 
-   // Routes pour la promotion des élèves
-   Route::get('student-promotions', [StudentPromotionController::class, 'index'])
-   ->name('student-promotions.index');
-Route::get('student-promotions/create', [StudentPromotionController::class, 'create'])
-   ->name('student-promotions.create');
-Route::post('student-promotions/promote', [StudentPromotionController::class, 'promote'])
-   ->name('student-promotions.promote');
+    // Routes pour la promotion des élèves
+    Route::get('student-promotions', [StudentPromotionController::class, 'index'])
+        ->name('student-promotions.index');
+    Route::get('student-promotions/create', [StudentPromotionController::class, 'create'])
+        ->name('student-promotions.create');
+    Route::post('student-promotions/promote', [StudentPromotionController::class, 'promote'])
+        ->name('student-promotions.promote');
+
+    Route::resource('teachers', TeacherController::class);
+    Route::get('teachers/{teacher}/assign-subjects', [TeacherController::class, 'assignSubjectsForm'])
+        ->name('teachers.assign-subjects-form');
+    Route::post('teachers/{teacher}/assign-subjects', [TeacherController::class, 'assignSubjects'])
+        ->name('teachers.assign-subjects');
+
+    // Routes des matières
+    Route::resource('subjects', SubjectController::class);
+    // Route supplémentaire pour la duplication
+    Route::post('subjects/{subject}/duplicate', [SubjectController::class, 'duplicate'])
+        ->name('subjects.duplicate');
+
+    // Route pour le formulaire d'assignation de matières
+    Route::get('assign-subjects', [TeacherController::class, 'assignSubjectsForm'])
+        ->name('teachers.assign-form');
+
+    Route::post('assign-subjects', [TeacherController::class, 'assignSubjects'])
+        ->name('teachers.assign');
+
+// Route pour la liste des professeurs assignés
+    Route::get('assigned-teachers', [TeacherController::class, 'assignedTeachers'])
+        ->name('teachers.assigned');
+
+    Route::delete('teachers/{teacher}/subjects/{subject}/remove', [TeacherController::class, 'removeSubject'])
+        ->name('teachers.remove-subject');
+
+
 });
 
 

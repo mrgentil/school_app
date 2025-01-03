@@ -240,7 +240,7 @@ class TeacherController extends Controller
             ->limit(10)
             ->get();
 
-        return response()->json($subjects);
+        return redirect()->route('subjects.search', compact('subjects'));
     }
 
     public function assignedTeachers()

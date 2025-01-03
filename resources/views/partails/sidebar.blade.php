@@ -49,7 +49,8 @@
                 <a href="#" class="nav-link"><i class="flaticon-settings-work-tool"></i><span>Options</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('options.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Options</a>
+                        <a href="{{route('options.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les
+                            Options</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{route('options.create')}}" class="nav-link"><i
@@ -58,10 +59,12 @@
                 </ul>
             </li>
             <li class="nav-item sidebar-nav-item">
-                <a href="#" class="nav-link"><i class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Classes</span></a>
+                <a href="#" class="nav-link"><i
+                        class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Classes</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('classes.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Classes</a>
+                        <a href="{{route('classes.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les
+                            Classes</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{route('classes.create')}}" class="nav-link"><i
@@ -73,7 +76,8 @@
                 <a href="#" class="nav-link"><i class="flaticon-technological"></i><span>Promotions</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('promotions.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les Promotions</a>
+                        <a href="{{route('promotions.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Les
+                            Promotions</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{route('promotions.create')}}" class="nav-link"><i
@@ -85,7 +89,8 @@
                 <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Eleves</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('students.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Admission Eleve</a>
+                        <a href="{{route('students.index')}}" class="nav-link"><i class="fas fa-angle-right"></i>Admission
+                            Eleve</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('histories.index') }}" class="nav-link">
@@ -99,7 +104,42 @@
                     </li>
                 </ul>
             </li>
-
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link">
+                    <i class="flaticon-books"></i>
+                    <span>Matières</span>
+                </a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{{ route('subjects.index') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Liste des matières
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('subjects.create') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Ajouter matière
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link">
+                    <i class="flaticon-multiple-users-silhouette"></i>
+                    <span>Professeurs</span>
+                </a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{{ route('teachers.assigned') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Liste des professeurs assigner
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('teachers.assign-form') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Assigner une matière
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

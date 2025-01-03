@@ -61,6 +61,12 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+      // Relation avec Teacher
+      public function teacher()
+      {
+          return $this->hasOne(Teacher::class);
+      }
+
     public function school()
 {
     return $this->belongsTo(School::class);

@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('class_subject', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('teacher_id')->nullable()->constrained('teachers')->onDelete('set null');
             $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->foreignId('school_id')->constrained('schools')->onDelete('cascade'); // Ajout de la colonne school_id
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -24,6 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('class_subject');
+    Schema::dropIfExists('subjects');
     }
 };
