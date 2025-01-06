@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,           // Les étudiants, après que les classes et écoles sont définies
             StudentHistorySeeder::class,    // Historique des étudiants
             SubjectSeeder::class,           // Les matières
-            TeacherSeeder::class,           // Les professeurs
+            TeacherSeeder::class,
+            SubjectTeacherSeeder::class// Les professeurs
         ]);
 
 

@@ -108,7 +108,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     Route::get('/workload-overview', [TeacherWorkloadController::class, 'workloadOverview'])
         ->name('workload.overview');
-    Route::put('/workload/{teacher}', [TeacherWorkloadController::class, 'update'])->name('workload.update');
+    Route::put('/workload/update/{teacher}', [TeacherWorkloadController::class, 'update'])->name('workload.update');
 
 
 });

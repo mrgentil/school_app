@@ -84,7 +84,6 @@
                     </tbody>
                 </table>
             </div>
-            {{ $teachers->links() }}
         </div>
     </div>
 </div>

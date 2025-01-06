@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subject_teacher', function (Blueprint $table) {
+        Schema::create('teacher_workloads', function (Blueprint $table) {
             $table->id();
+            $table->string('semestre');
             $table->foreignId('teacher_id')->constrained('teachers')->onDelete('cascade');
+            //$table->foreignId('academic_year_id')->constrained('academic_years')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
-            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');  // C'est bien class_id
-            $table->foreignId('school_id')->constrained('schools')->onDelete('cascade');
-            $table->string('academic_year');
-            $table->integer('hours_per_week')->default(0);
+            $table->foreignId('promotion_id')->constrained('promotions')->onDelete('cascade');
+            $table->integer('number_of_students');
+            $table->integer('number_of_hours');
+            $table->float('workload');
             $table->timestamps();
         });
     }
@@ -28,7 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subject_teacher');
-    Schema::dropIfExists('teachers');
+        Schema::dropIfExists('teacher_workloads');
     }
 };

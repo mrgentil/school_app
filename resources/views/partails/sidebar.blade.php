@@ -138,6 +138,11 @@
                             <i class="fas fa-angle-right"></i>Assigner une matière
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('workload.overview') }}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Suivi de la charge de travail des enseignants
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
