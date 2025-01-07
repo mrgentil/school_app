@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Traits\HasPromotionPermissions;
 use App\Traits\HasRoles;
 use App\Traits\Searchable;
+use App\Traits\HasProgramPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\HasClassPermissions;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasRoles,HasClassPermissions,HasOptionPermissions, HasPromotionPermissions, Searchable, Notifiable;
+    use HasApiTokens, HasRoles, HasClassPermissions, HasOptionPermissions, HasPromotionPermissions, HasProgramPermissions, Searchable, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -61,16 +62,16 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-      // Relation avec Teacher
-      public function teacher()
-      {
-          return $this->hasOne(Teacher::class);
-      }
+    // Relation avec Teacher
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
 
     public function school()
-{
-    return $this->belongsTo(School::class);
-}
+    {
+        return $this->belongsTo(School::class);
+    }
 
     public function hasRole($roleName)
     {
@@ -88,19 +89,39 @@ class User extends Authenticatable
     }
 
     public function canManagePromotions(): bool
-{
-    return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
-}
+    {
+        return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+    }
 
-public function canManageAllPromotions(): bool
-{
-    return $this->hasRole('Super Administrateur');
-}
+    public function canManageAllPromotions(): bool
+    {
+        return $this->hasRole('Super Administrateur');
+    }
 
-public function canManageOwnPromotions(): bool
-{
-    return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
-}
+    public function canManageOwnPromotions(): bool
+    {
+        return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+    }
 
+
+    public function canManagePrograms(): bool
+    {
+        return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+    }
+
+    public function canManageAllPrograms(): bool
+    {
+        return $this->hasRole('Super Administrateur');
+    }
+
+    public function canManageOwnPrograms(): bool
+    {
+        return $this->hasAnyRole(['Super Administrateur', 'Administrateur']);
+    }
+
+    public function uploader()
+    {
+        return $this->belongsTo(User::class, 'uploaded_by');
+    }
 
 }

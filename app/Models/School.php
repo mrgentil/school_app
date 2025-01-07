@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Level;
+
 
 class School extends Model
 {
@@ -30,8 +32,24 @@ class School extends Model
         return $this->hasMany(Option::class);
     }
 
+    public function programs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Program::class);
+    }
+
     public function promotions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Promotion::class);
     }
+
+    public function levels()
+    {
+        return $this->hasMany(Level::class);
+    }
+
+    public function subjectsByLevel($levelId)
+    {
+        return $this->subjects()->wherePivot('level_id', $levelId);
+    }
+
 }

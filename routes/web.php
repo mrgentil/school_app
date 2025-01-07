@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CurriculumController;
+use App\Http\Controllers\LevelSubjectController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentHistoryController;
@@ -110,7 +113,15 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         ->name('workload.overview');
     Route::put('/workload/{teacher}', [TeacherWorkloadController::class, 'update'])->name('workload.update');
 
+    Route::get('/levels/{levelId}/subjects', [LevelSubjectController::class, 'showSubjectsByLevel'])->name('levels.subjects.show');
+    Route::post('/levels/{levelId}/subjects', [LevelSubjectController::class, 'assignSubjectToLevel'])->name('levels.subjects.assign');
+    Route::get('/levels', [LevelSubjectController::class, 'index'])->name('levels.index');
+    Route::get('levels/{levelId}/subjects', [LevelSubjectController::class, 'getSubjectsByLevel'])->name('levels.subjects.assign');
+
+    //Routes Programmes Scolaire
+    Route::resource('programmes', ProgramController::class);
+    Route::get('programmes/{id}/download', [ProgramController::class, 'download'])->name('programs.download');
+
 
 });
-
 

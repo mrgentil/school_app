@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Classe;
 use App\Models\Option;
+use App\Models\Program;
 use App\Models\Promotion;
 use App\Models\Role;
 use App\Models\School;
@@ -13,6 +14,7 @@ use App\Models\Subject;
 use App\Models\Teacher;
 use App\Policies\ClassPolicy;
 use App\Policies\OptionPolicy;
+use App\Policies\ProgramPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SchoolPolicy;
 use App\Policies\StudentHistoryPolicy;
@@ -44,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         StudentHistory::class => StudentHistoryPolicy::class,
         Subject::class => SubjectPolicy::class,
         Teacher::class => TeacherPolicy::class,
+        Program::class => ProgramPolicy::class
 
     ];
 

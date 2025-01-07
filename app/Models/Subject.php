@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Level;
 
 class Subject extends Model
 {
@@ -63,5 +64,13 @@ class Subject extends Model
     {
         return $this->belongsToMany(Classe::class, 'class_subject', 'subject_id', 'class_id');
     }
+
+    public function levels()
+    {
+        return $this->belongsToMany(Level::class, 'level_subject')
+            ->withPivot('hours_per_week', 'school_id')
+            ->withTimestamps();
+    }
+
 
 }
