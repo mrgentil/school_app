@@ -147,18 +147,18 @@
             </li>
             <li class="nav-item sidebar-nav-item">
                 <a href="#" class="nav-link">
-                    <i class="flaticon-multiple-users-silhouette"></i>
-                    <span>Programmes Scolaire</span>
+                    <i class="flaticon-calendar"></i>
+                    <span>Horaire des cours</span>
                 </a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{{route('programmes.create')}}" class="nav-link">
-                            <i class="fas fa-angle-right"></i>Importer un programme
+                        <a href="{{route('schedules.create')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Ajouter un Horaire
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('programmes.index')}}" class="nav-link">
-                            <i class="fas fa-angle-right"></i>Voir Programmes
+                        <a href="{{route('schedules.index')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Liste Horaire
                         </a>
                     </li>
                 </ul>

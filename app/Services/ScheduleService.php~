@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Services;
+
+
+use App\Models\Schedule;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+class ScheduleService
+{
+    /**
+     * Créer un nouvel horaire.
+     */
+    public function createSchedule(array $data): Schedule
+    {
+        $data['created_by'] = Auth::id();
+        return Schedule::create($data);
+    }
+
+    /**
+     * Mettre à jour un horaire existant.
+     */
+    public function updateSchedule(Schedule $schedule, array $data): Schedule
+    {
+        $schedule->update($data);
+        return $schedule;
+    }
+
+    /**
+     * Supprimer un horaire.
+     */
+    public function deleteSchedule(Schedule $schedule): void
+    {
+        $schedule->delete();
+    }
+
+    /**
+     * Récupérer les horaires pour l'utilisateur connecté.
+     */
+    public function getSchedules()
+    {
+        $user = Auth::user();
+
+        if ($user->role->name === 'Super Administrateur') {
+            return Schedule::all(); // Le Super Administrateur peut voir tous les horaires
+        }
+
+        if ($user->role->name === 'Administrateur') {
+            return Schedule::whereHas('class', function ($query) use ($user) {
+                $query->where('school_id', $user->school_id);
+            })->get();
+        }
+
+        return collect(); // Les autres utilisateurs ne peuvent rien voir
+    }
+}

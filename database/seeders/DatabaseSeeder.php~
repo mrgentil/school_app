@@ -27,9 +27,8 @@ class DatabaseSeeder extends Seeder
             StudentHistorySeeder::class,    // Historique des étudiants
             SubjectSeeder::class,           // Les matières
             TeacherSeeder::class,
-            SubjectTeacherSeeder::class,// Les professeurs
-            ScheduleSeeder::class
-
+            SubjectTeacherSeeder::class// Les professeurs
+        
         ]);
 
 

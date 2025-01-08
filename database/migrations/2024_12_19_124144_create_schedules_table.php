@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade'); // Modifié pour pointer vers la table users
+            $table->foreignId('created_by')->constrained('users');
             $table->time('start_time');
             $table->time('end_time');
-            $table->string('day_of_week'); // e.g., Monday, Tuesday
+            $table->string('day_of_week');
             $table->timestamps();
         });
+
     }
 
     /**

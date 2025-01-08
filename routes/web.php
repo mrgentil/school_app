@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\LevelSubjectController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentHistoryController;
@@ -121,6 +122,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     //Routes Programmes Scolaire
     Route::resource('programmes', ProgramController::class);
     Route::get('programmes/{id}/download', [ProgramController::class, 'download'])->name('programs.download');
+
+    //Routes Schedules
+    Route::resource('schedules', ScheduleController::class);
+
 
 
 });

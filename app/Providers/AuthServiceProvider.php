@@ -7,6 +7,7 @@ use App\Models\Option;
 use App\Models\Program;
 use App\Models\Promotion;
 use App\Models\Role;
+use App\Models\Schedule;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\StudentHistory;
@@ -16,6 +17,7 @@ use App\Policies\ClassPolicy;
 use App\Policies\OptionPolicy;
 use App\Policies\ProgramPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\SchedulePolicy;
 use App\Policies\SchoolPolicy;
 use App\Policies\StudentHistoryPolicy;
 use App\Policies\StudentPolicy;
@@ -46,7 +48,8 @@ class AuthServiceProvider extends ServiceProvider
         StudentHistory::class => StudentHistoryPolicy::class,
         Subject::class => SubjectPolicy::class,
         Teacher::class => TeacherPolicy::class,
-        Program::class => ProgramPolicy::class
+        Program::class => ProgramPolicy::class,
+        Schedule::class => SchedulePolicy::class,
 
     ];
 

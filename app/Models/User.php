@@ -124,4 +124,11 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'uploaded_by');
     }
 
+    public function scopeProfessors($query)
+    {
+        return $query->whereHas('role', function ($q) {
+            $q->where('name', 'Professeur');
+        });
+    }
+
 }
