@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Classe;
-use App\Models\Exam;
 use App\Models\Option;
 use App\Models\Program;
 use App\Models\Promotion;
@@ -15,7 +14,6 @@ use App\Models\StudentHistory;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Policies\ClassPolicy;
-use App\Policies\ExamPolicy;
 use App\Policies\OptionPolicy;
 use App\Policies\ProgramPolicy;
 use App\Policies\RolePolicy;
@@ -52,7 +50,6 @@ class AuthServiceProvider extends ServiceProvider
         Teacher::class => TeacherPolicy::class,
         Program::class => ProgramPolicy::class,
         Schedule::class => SchedulePolicy::class,
-        Exam::class => ExamPolicy::class,
 
     ];
 

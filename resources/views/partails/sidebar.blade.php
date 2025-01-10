@@ -163,6 +163,42 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link">
+                    <i class="flaticon-calendar"></i>
+                    <span>Examens</span>
+                </a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{{route('exams.create')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Ajouter un Examen
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('exams.index')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Liste Examens
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link">
+                    <i class="flaticon-calendar"></i>
+                    <span>Questions</span>
+                </a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{{route('questions.create')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Ajouter une Question
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('questions.index')}}" class="nav-link">
+                            <i class="fas fa-angle-right"></i>Liste Questionnaires
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
