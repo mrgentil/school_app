@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CurriculumController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\LevelSubjectController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
@@ -126,6 +128,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     //Routes Schedules
     Route::resource('schedules', ScheduleController::class);
 
+    //Routes Exam
+    Route::resource('exams', ExamController::class);
+    //Routes Question
+    Route::resource('questions', QuestionController::class);
+    Route::get('questions/{question}/download', [QuestionController::class, 'download'])->name('questions.download');
+    Route::get('questions/{question}/answer', [QuestionController::class, 'answerQuestion'])->name('questions.answer');
+    Route::get('questions/{question}/answered', [QuestionController::class, 'answeredQuestions'])->name('questions.answered');
 
 
 });

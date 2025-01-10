@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,           // Les matières
             TeacherSeeder::class,
             SubjectTeacherSeeder::class,// Les professeurs
-            ScheduleSeeder::class
+            ScheduleSeeder::class,
+           
 
         ]);
 

@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
 
         // Super Admin
         User::create([
-            'name' => 'Administrateur',
+            'name' => 'Administrateur 1',
             'first_name' => 'Admin',
             'last_name' => 'Admin',
             'gender' => 'Masculin',
